@@ -21,13 +21,7 @@ void main() async {
 
   runApp(const MyApp());
 }
-<<<<<<< HEAD
 
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 2bca872e80eb7ef502869b606abec5a19ad2f4f6
->>>>>>> afc6f22bcacca4d887f5e37ade79080370c96aad
 // fawzi awad
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
