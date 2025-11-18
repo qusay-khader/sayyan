@@ -24,7 +24,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.sayyan"
+        applicationId = "com.sayyan.app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
@@ -45,3 +45,13 @@ android {
 flutter {
     source = "../.."
 }
+
+dependencies {
+    // Use the Firebase BoM to manage Firebase library versions
+    implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
+
+    // Add the Firebase products you need. Example:
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-firestore-ktx")
+}
+

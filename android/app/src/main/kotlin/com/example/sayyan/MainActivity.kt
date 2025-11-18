@@ -1,4 +1,4 @@
-package com.example.sayyan
+package com.sayyan.app
 
 import io.flutter.embedding.android.FlutterActivity
 
