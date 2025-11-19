@@ -1,11 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'screens/rating_popup.dart';
-import 'screens/request_status_page.dart';
 import 'screens/screens.dart';
 import 'firebase_options.dart';
-import 'screens/service_request_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,9 +40,6 @@ class MyApp extends StatelessWidget {
         '/home': (context) => const HomeScreen(),
         '/profile': (context) => const ProfileScreen(),
         '/edit-profile': (context) => const EditProfileScreen(),
-        '/service-request': (context) => const ServiceRequestPage(),
-        '/request-status': (context) => const RequestStatusPage(),
-        '/rating-popup': (context) => const RatingPopup(),
       },
     );
   }
