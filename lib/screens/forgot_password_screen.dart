@@ -43,7 +43,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       );
 
       // العودة لشاشة تسجيل الدخول
-      Navigator.pop(context);
+      Navigator.pushReplacementNamed(
+        context,
+        '/check-email',
+        arguments: _emailController.text.trim(),
+      );
     } on FirebaseAuthException catch (e) {
       String message = 'حدث خطأ، حاول مرة أخرى';
 

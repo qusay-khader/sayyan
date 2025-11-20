@@ -1,6 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:sayyan/screens/check_email_screen.dart';
+import 'package:sayyan/screens/forgot_password_screen.dart';
+import 'package:sayyan/screens/password_reset_screen.dart';
+import 'package:sayyan/screens/set_new_password_screen.dart';
 import 'screens/screens.dart';
 import 'firebase_options.dart';
 
@@ -37,6 +41,13 @@ class MyApp extends StatelessWidget {
         '/splash': (context) => const SplashScreen(),
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterPage(),
+        '/forgot-password': (context) => const ForgotPasswordScreen(),
+        '/check-email': (context) {
+          final email = ModalRoute.of(context)!.settings.arguments as String;
+          return CheckEmailScreen(email: email);
+        },
+        '/set-new-password': (context) => const SetNewPasswordScreen(),
+        '/password-reset-success': (context) => const PasswordResetScreen(),
         '/home': (context) => const HomeScreen(),
         '/profile': (context) => const ProfileScreen(),
         '/edit-profile': (context) => const EditProfileScreen(),
