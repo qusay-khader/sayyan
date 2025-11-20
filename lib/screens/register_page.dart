@@ -40,7 +40,7 @@ class _RegisterPageState extends State<RegisterPage> {
     if (picked != null) {
       setState(() {
         _dateController.text =
-            "${picked.day.toString().padLeft(2, '0')}/${picked.month.toString().padLeft(2, '0')}/${picked.year}";
+        "${picked.day.toString().padLeft(2, '0')}/${picked.month.toString().padLeft(2, '0')}/${picked.year}";
       });
     }
   }
@@ -51,24 +51,22 @@ class _RegisterPageState extends State<RegisterPage> {
     setState(() => _isLoading = true);
 
     try {
-      // إنشاء حساب في Firebase Authentication
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
-            email: _emailController.text.trim(),
-            password: _passwordController.text,
-          );
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+      );
 
-      // حفظ بيانات المستخدم في Firestore
       await FirebaseFirestore.instance
           .collection('users')
           .doc(userCredential.user!.uid)
           .set({
-            'firstName': _nameController.text.trim(),
-            'lastName': _lastNameController.text.trim(),
-            'email': _emailController.text.trim(),
-            'birthDate': _dateController.text,
-            'createdAt': FieldValue.serverTimestamp(),
-          });
+        'firstName': _nameController.text.trim(),
+        'lastName': _lastNameController.text.trim(),
+        'email': _emailController.text.trim(),
+        'birthDate': _dateController.text,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -116,6 +114,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 20),
+
                   // Back Button
                   Container(
                     decoration: BoxDecoration(
@@ -129,7 +128,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   const SizedBox(height: 32),
 
-                  // Title
                   const Text(
                     'Register',
                     style: TextStyle(
@@ -161,20 +159,20 @@ class _RegisterPageState extends State<RegisterPage> {
                     child: TextFormField(
                       controller: _nameController,
                       style: const TextStyle(fontSize: 15),
-                      decoration: const InputDecoration(
-                        hintText: 'Lois',
+                      decoration: InputDecoration(
+                        hintText: 'First Name',
                         hintStyle: TextStyle(
-                          color: Colors.black87,
+                          color: Colors.grey.withOpacity(0.6),
                           fontSize: 15,
                         ),
                         border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(
+                        contentPadding: const EdgeInsets.symmetric(
                           horizontal: 20,
                           vertical: 18,
                         ),
                       ),
                       validator: (v) =>
-                          v!.isEmpty ? 'Please enter first name' : null,
+                      v!.isEmpty ? 'Please enter first name' : null,
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -195,20 +193,20 @@ class _RegisterPageState extends State<RegisterPage> {
                     child: TextFormField(
                       controller: _lastNameController,
                       style: const TextStyle(fontSize: 15),
-                      decoration: const InputDecoration(
-                        hintText: 'Becket',
+                      decoration: InputDecoration(
+                        hintText: 'Last Name',
                         hintStyle: TextStyle(
-                          color: Colors.black87,
+                          color: Colors.grey.withOpacity(0.6),
                           fontSize: 15,
                         ),
                         border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(
+                        contentPadding: const EdgeInsets.symmetric(
                           horizontal: 20,
                           vertical: 18,
                         ),
                       ),
                       validator: (v) =>
-                          v!.isEmpty ? 'Please enter last name' : null,
+                      v!.isEmpty ? 'Please enter last name' : null,
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -230,14 +228,14 @@ class _RegisterPageState extends State<RegisterPage> {
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
                       style: const TextStyle(fontSize: 15),
-                      decoration: const InputDecoration(
-                        hintText: 'Loisbecket@gmail.com',
+                      decoration: InputDecoration(
+                        hintText: 'Email Address',
                         hintStyle: TextStyle(
-                          color: Colors.black87,
+                          color: Colors.grey.withOpacity(0.6),
                           fontSize: 15,
                         ),
                         border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(
+                        contentPadding: const EdgeInsets.symmetric(
                           horizontal: 20,
                           vertical: 18,
                         ),
@@ -270,9 +268,9 @@ class _RegisterPageState extends State<RegisterPage> {
                       onTap: _selectDate,
                       style: const TextStyle(fontSize: 15),
                       decoration: InputDecoration(
-                        hintText: '18/03/2024',
-                        hintStyle: const TextStyle(
-                          color: Colors.black87,
+                        hintText: 'Birth Date',
+                        hintStyle: TextStyle(
+                          color: Colors.grey.withOpacity(0.6),
                           fontSize: 15,
                         ),
                         suffixIcon: Icon(
@@ -287,7 +285,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       ),
                       validator: (v) =>
-                          v!.isEmpty ? 'Please select birth date' : null,
+                      v!.isEmpty ? 'Please select birth date' : null,
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -310,9 +308,9 @@ class _RegisterPageState extends State<RegisterPage> {
                       obscureText: _obscurePassword,
                       style: const TextStyle(fontSize: 15),
                       decoration: InputDecoration(
-                        hintText: '••••••••',
-                        hintStyle: const TextStyle(
-                          color: Colors.black87,
+                        hintText: 'Password',
+                        hintStyle: TextStyle(
+                          color: Colors.grey.withOpacity(0.6),
                           fontSize: 15,
                         ),
                         suffixIcon: IconButton(
@@ -325,7 +323,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                           onPressed: () {
                             setState(
-                              () => _obscurePassword = !_obscurePassword,
+                                  () => _obscurePassword = !_obscurePassword,
                             );
                           },
                         ),
@@ -360,21 +358,21 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       child: _isLoading
                           ? const SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                                strokeWidth: 2,
-                              ),
-                            )
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      )
                           : const Text(
-                              'Register',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                              ),
-                            ),
+                        'Register',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 24),
