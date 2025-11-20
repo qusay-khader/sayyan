@@ -58,7 +58,10 @@ class _RegisterPageState extends State<RegisterPage> {
             password: _passwordController.text,
           );
 
-      // حفظ بيانات المستخدم في Firestore
+      // إرسال بريد التحقق
+      await userCredential.user!.sendEmailVerification();
+
+      // حفظ بيانات المستخدم مؤقتاً (مع علامة أن الإيميل غير مفعّل)
       await FirebaseFirestore.instance
           .collection('users')
           .doc(userCredential.user!.uid)
@@ -67,21 +70,30 @@ class _RegisterPageState extends State<RegisterPage> {
             'lastName': _lastNameController.text.trim(),
             'email': _emailController.text.trim(),
             'birthDate': _dateController.text,
+            'emailVerified': false,
             'createdAt': FieldValue.serverTimestamp(),
           });
 
+      // تسجيل خروج المستخدم مباشرة
+      await FirebaseAuth.instance.signOut();
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Registration successful!')),
+          const SnackBar(
+            content: Text(
+              'تم إرسال رابط التحقق إلى بريدك الإلكتروني. يرجى التحقق من البريد قبل تسجيل الدخول',
+            ),
+            duration: Duration(seconds: 5),
+          ),
         );
         Navigator.pop(context);
       }
     } on FirebaseAuthException catch (e) {
       String message = 'An error occurred';
       if (e.code == 'weak-password') {
-        message = 'Password is too weak';
+        message = 'كلمة المرور ضعيفة جداً';
       } else if (e.code == 'email-already-in-use') {
-        message = 'Email is already registered';
+        message = 'البريد الإلكتروني مسجل مسبقاً';
       }
 
       if (mounted) {
@@ -93,7 +105,7 @@ class _RegisterPageState extends State<RegisterPage> {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('Error: $e')));
+        ).showSnackBar(SnackBar(content: Text('خطأ: $e')));
       }
     } finally {
       if (mounted) {
@@ -162,7 +174,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       controller: _nameController,
                       style: const TextStyle(fontSize: 15),
                       decoration: const InputDecoration(
-                        hintText: 'Lois',
+                        hintText: 'Please enter first name',
                         hintStyle: TextStyle(
                           color: Colors.black87,
                           fontSize: 15,
@@ -196,7 +208,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       controller: _lastNameController,
                       style: const TextStyle(fontSize: 15),
                       decoration: const InputDecoration(
-                        hintText: 'Becket',
+                        hintText: 'Please enter last name',
                         hintStyle: TextStyle(
                           color: Colors.black87,
                           fontSize: 15,
@@ -231,7 +243,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       keyboardType: TextInputType.emailAddress,
                       style: const TextStyle(fontSize: 15),
                       decoration: const InputDecoration(
-                        hintText: 'Loisbecket@gmail.com',
+                        hintText: 'test@example.com',
                         hintStyle: TextStyle(
                           color: Colors.black87,
                           fontSize: 15,
