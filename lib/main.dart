@@ -49,6 +49,7 @@ class MyApp extends StatelessWidget {
         '/set-new-password': (context) => const SetNewPasswordScreen(),
         '/password-reset-success': (context) => const PasswordResetScreen(),
         '/home': (context) => const HomeScreen(),
+        '/service-request': (context) => const ServiceRequestScreen(), // جديد
         '/profile': (context) => const ProfileScreen(),
         '/edit-profile': (context) => const EditProfileScreen(),
       },
