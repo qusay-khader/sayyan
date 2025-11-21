@@ -12,7 +12,6 @@ class EditProfileScreen extends StatefulWidget {
 class _EditProfileScreenState extends State<EditProfileScreen> {
   late TextEditingController _nameController;
   late TextEditingController _phoneController;
-  late TextEditingController _interestsController;
   bool _isLoading = false;
 
   @override
@@ -20,7 +19,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     super.initState();
     _nameController = TextEditingController();
     _phoneController = TextEditingController();
-    _interestsController = TextEditingController();
     _loadUserData();
   }
 
@@ -36,7 +34,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         setState(() {
           _nameController.text = userData['name'] ?? user.displayName ?? '';
           _phoneController.text = userData['phone_number'] ?? '';
-          _interestsController.text = userData['interests'] ?? '';
         });
       } catch (e) {
         if (mounted) {
@@ -57,7 +54,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
         'name': _nameController.text.trim(),
         'phone_number': _phoneController.text.trim(),
-        'interests': _interestsController.text.trim(),
         'updated_at': DateTime.now(),
       }, SetOptions(merge: true));
 
@@ -84,7 +80,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   void dispose() {
     _nameController.dispose();
     _phoneController.dispose();
-    _interestsController.dispose();
     super.dispose();
   }
 
@@ -126,20 +121,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 keyboardType: TextInputType.phone,
               ),
               const SizedBox(height: 16),
-
-              // Interests Field
-              TextField(
-                controller: _interestsController,
-                decoration: InputDecoration(
-                  labelText: 'الاهتمامات',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  prefixIcon: const Icon(Icons.interests),
-                ),
-                maxLines: 3,
-              ),
-              const SizedBox(height: 24),
 
               // Save Button
               SizedBox(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:sayyan/screens/profile_screen.dart';
 import '../models/maintenance_request.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -17,7 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _pages = [
     const _HomePage(),
     const _RequestsPage(),
-    const _ProfilePage(),
+    const ProfileScreenEnhanced(),
   ];
 
   @override
@@ -436,62 +437,6 @@ class _RequestsPage extends StatelessWidget {
         ],
       ),
       body: const Center(child: Text('All Requests - Coming Soon')),
-    );
-  }
-}
-
-// ==================== PROFILE PAGE ====================
-class _ProfilePage extends StatelessWidget {
-  const _ProfilePage();
-
-  @override
-  Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Profile'),
-        backgroundColor: const Color(0xFF2196F3),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircleAvatar(
-              radius: 50,
-              backgroundColor: const Color(0xFF2196F3),
-              child: Text(
-                user?.email?[0].toUpperCase() ?? 'U',
-                style: const TextStyle(fontSize: 40, color: Colors.white),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              user?.email ?? 'No email',
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 30),
-            ElevatedButton.icon(
-              onPressed: () async {
-                await FirebaseAuth.instance.signOut();
-                if (context.mounted) {
-                  Navigator.pushReplacementNamed(context, '/login');
-                }
-              },
-              icon: const Icon(Icons.logout),
-              label: const Text('Logout'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 32,
-                  vertical: 12,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
