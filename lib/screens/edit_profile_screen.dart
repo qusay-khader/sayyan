@@ -39,7 +39,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         if (mounted) {
           ScaffoldMessenger.of(
             context,
-          ).showSnackBar(SnackBar(content: Text('خطأ في تحميل البيانات: $e')));
+          ).showSnackBar(SnackBar(content: Text('Error loading data: $e')));
         }
       }
     }
@@ -60,14 +60,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(const SnackBar(content: Text('تم حفظ البيانات بنجاح')));
+        ).showSnackBar(const SnackBar(content: Text('Profile updated successfully')));
         Navigator.of(context).pop();
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('خطأ: $e')));
+        ).showSnackBar(SnackBar(content: Text('Error: $e')));
       }
     } finally {
       if (mounted) {
@@ -87,7 +87,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('تعديل الملف الشخصي'),
+        title: const Text('Edit Profile'),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -99,7 +99,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               TextField(
                 controller: _nameController,
                 decoration: InputDecoration(
-                  labelText: 'الاسم',
+                  labelText: 'Name',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -112,7 +112,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               TextField(
                 controller: _phoneController,
                 decoration: InputDecoration(
-                  labelText: 'رقم الهاتف',
+                  labelText: 'Phone Number',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -129,16 +129,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   onPressed: _isLoading ? null : _saveProfile,
                   child: _isLoading
                       ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              Colors.white,
-                            ),
-                          ),
-                        )
-                      : const Text('حفظ التغييرات'),
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        Colors.white,
+                      ),
+                    ),
+                  )
+                      : const Text('Save Changes'),
                 ),
               ),
             ],

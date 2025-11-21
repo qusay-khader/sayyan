@@ -31,30 +31,29 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
       if (!mounted) return;
 
-      // إظهار رسالة نجاح
+      // Success message
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
-            'تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني',
+            'A password reset link has been sent to your email',
           ),
           backgroundColor: Colors.green,
           duration: Duration(seconds: 4),
         ),
       );
 
-      // العودة لشاشة تسجيل الدخول
       Navigator.pushReplacementNamed(
         context,
         '/check-email',
         arguments: _emailController.text.trim(),
       );
     } on FirebaseAuthException catch (e) {
-      String message = 'حدث خطأ، حاول مرة أخرى';
+      String message = 'An error occurred, please try again';
 
       if (e.code == 'user-not-found') {
-        message = 'البريد الإلكتروني غير مسجل';
+        message = 'This email is not registered';
       } else if (e.code == 'invalid-email') {
-        message = 'البريد الإلكتروني غير صحيح';
+        message = 'Invalid email address';
       }
 
       if (!mounted) return;
@@ -91,7 +90,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               children: [
                 const SizedBox(height: 20),
 
-                // العنوان
+                // Title
                 const Text(
                   'Forgot password',
                   style: TextStyle(
@@ -103,7 +102,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
                 const SizedBox(height: 12),
 
-                // الوصف
+                // Description
                 const Text(
                   'Please enter your email to reset the password',
                   style: TextStyle(fontSize: 14, color: Colors.grey),
@@ -111,7 +110,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
                 const SizedBox(height: 40),
 
-                // حقل البريد الإلكتروني
+                // Field label
                 const Text(
                   'Your Email',
                   style: TextStyle(
@@ -123,6 +122,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
                 const SizedBox(height: 8),
 
+                // Email TextField
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
@@ -154,10 +154,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'الرجاء إدخال البريد الإلكتروني';
+                      return 'Please enter your email';
                     }
                     if (!value.contains('@')) {
-                      return 'البريد الإلكتروني غير صحيح';
+                      return 'Invalid email';
                     }
                     return null;
                   },
@@ -165,7 +165,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
                 const SizedBox(height: 32),
 
-                // زر إعادة تعيين كلمة المرور
+                // Reset Button
                 SizedBox(
                   width: double.infinity,
                   height: 56,
@@ -180,23 +180,23 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     ),
                     child: _isLoading
                         ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.white,
-                              ),
-                            ),
-                          )
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          Colors.white,
+                        ),
+                      ),
+                    )
                         : const Text(
-                            'Reset Password',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            ),
-                          ),
+                      'Reset Password',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
                 ),
               ],
