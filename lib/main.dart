@@ -51,7 +51,6 @@ class MyApp extends StatelessWidget {
         '/home': (context) => const HomeScreen(),
         '/service-request': (context) => const ServiceRequestScreen(), // جديد
         '/profile': (context) => const ProfileScreenEnhanced(),
-        '/edit-profile': (context) => const EditProfileScreen(),
       },
     );
   }

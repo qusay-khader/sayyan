@@ -40,6 +40,8 @@ dependencies:
   firebase_storage: ^13.0.4
   image_picker: ^1.2.1
   intl: ^0.20.2
+  intl_phone_field: ^3.2.0
+  flutter_datetime_picker_plus: ^2.2.0
 
 dev_dependencies:
   flutter_test:

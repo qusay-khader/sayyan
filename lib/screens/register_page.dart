@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
+    as picker;
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -16,6 +18,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _dateController = TextEditingController();
+  final _phoneController = TextEditingController();
 
   bool _isLoading = false;
   bool _obscurePassword = true;
@@ -28,21 +31,38 @@ class _RegisterPageState extends State<RegisterPage> {
     _passwordController.dispose();
     _dateController.dispose();
     super.dispose();
+    _phoneController.dispose();
   }
 
   Future<void> _selectDate() async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime(2000),
-      firstDate: DateTime(1950),
-      lastDate: DateTime.now(),
+    picker.DatePicker.showDatePicker(
+      context,
+      showTitleActions: true,
+      minTime: DateTime(1950, 1, 1),
+      maxTime: DateTime.now(),
+      currentTime: DateTime(2000, 1, 1),
+      locale: picker.LocaleType.en, // أو ar للعربي
+      theme: const picker.DatePickerTheme(
+        backgroundColor: Colors.white,
+        itemStyle: TextStyle(
+          color: Colors.black,
+          fontSize: 18,
+          fontWeight: FontWeight.w500,
+        ),
+        doneStyle: TextStyle(
+          color: Color(0xFF4A6FFF),
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+        ),
+        cancelStyle: TextStyle(color: Colors.grey, fontSize: 16),
+      ),
+      onConfirm: (date) {
+        setState(() {
+          _dateController.text =
+              "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
+        });
+      },
     );
-    if (picked != null) {
-      setState(() {
-        _dateController.text =
-            "${picked.day.toString().padLeft(2, '0')}/${picked.month.toString().padLeft(2, '0')}/${picked.year}";
-      });
-    }
   }
 
   Future<void> _register() async {
@@ -70,6 +90,7 @@ class _RegisterPageState extends State<RegisterPage> {
             'lastName': _lastNameController.text.trim(),
             'email': _emailController.text.trim(),
             'birthDate': _dateController.text,
+            'phone_number': '+962${_phoneController.text.trim()}',
             'emailVerified': false,
             'createdAt': FieldValue.serverTimestamp(),
           });
@@ -263,6 +284,83 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   const SizedBox(height: 16),
 
+                  // Phone Number
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.03),
+                          blurRadius: 10,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        // Country Code Section
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Row(
+                            children: [
+                              const Text(
+                                '🇯🇴',
+                                style: TextStyle(fontSize: 24),
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                '+962',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  color: Colors.grey[700],
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              Container(
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                ),
+                                width: 1,
+                                height: 24,
+                                color: Colors.grey[300],
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        // Phone Number Input
+                        Expanded(
+                          child: TextFormField(
+                            controller: _phoneController,
+                            keyboardType: TextInputType.phone,
+                            style: const TextStyle(fontSize: 15),
+                            decoration: const InputDecoration(
+                              hintText: '79 123 4567',
+                              hintStyle: TextStyle(
+                                color: Colors.black87,
+                                fontSize: 15,
+                              ),
+                              border: InputBorder.none,
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 0,
+                                vertical: 18,
+                              ),
+                            ),
+                            validator: (v) {
+                              if (v!.isEmpty)
+                                return 'Please enter phone number';
+                              if (v.length < 9) return 'Invalid phone number';
+                              return null;
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 20),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
                   // Birth Date
                   Container(
                     decoration: BoxDecoration(
@@ -276,30 +374,65 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       ],
                     ),
-                    child: TextFormField(
-                      controller: _dateController,
-                      readOnly: true,
-                      onTap: _selectDate,
-                      style: const TextStyle(fontSize: 15),
-                      decoration: InputDecoration(
-                        hintText: '18/03/2024',
-                        hintStyle: const TextStyle(
-                          color: Colors.black87,
-                          fontSize: 15,
-                        ),
-                        suffixIcon: Icon(
-                          Icons.calendar_today_outlined,
-                          size: 20,
-                          color: Colors.grey[400],
-                        ),
-                        border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 18,
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: _selectDate,
+                        borderRadius: BorderRadius.circular(12),
+                        splashColor: const Color(0xFF4A6FFF).withOpacity(0.1),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 18,
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: const Color(
+                                    0xFF4A6FFF,
+                                  ).withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: const Icon(
+                                  Icons.calendar_month_rounded,
+                                  size: 20,
+                                  color: Color(0xFF4A6FFF),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Birth Date',
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      _dateController.text.isEmpty
+                                          ? 'DD/MM/YYYY'
+                                          : _dateController.text,
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        color: _dateController.text.isEmpty
+                                            ? Colors.grey[400]
+                                            : Colors.black,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                      validator: (v) =>
-                          v!.isEmpty ? 'Please select birth date' : null,
                     ),
                   ),
                   const SizedBox(height: 16),
