@@ -42,6 +42,15 @@ class _ProfileScreenEnhancedState extends State<ProfileScreenEnhanced> {
           final String phoneNumber =
               userData['phone_number'] ?? 'Not available';
 
+          final String firstName = userData['firstName'] ?? '';
+          final String lastName = userData['lastName'] ?? '';
+          final String name = firstName.isNotEmpty && lastName.isNotEmpty
+              ? '$firstName $lastName'
+              : user.displayName ?? 'No Name';
+          final String email = user.email ?? 'No Email';
+          final String phoneNumber =
+              userData['phone_number'] ?? 'Not available';
+
           return CustomScrollView(
             slivers: [
               // App Bar with Gradient
