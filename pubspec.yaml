@@ -43,6 +43,8 @@ dependencies:
   intl_phone_field: ^3.2.0
   flutter_datetime_picker_plus: ^2.2.0
 
+  # Localization packages
+easy_localization: ^3.0.3
 flutter_localizations:
   sdk: flutter
 
@@ -63,11 +65,15 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
 
+
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  assets:
+    - assets/translations/
   generate: true
+
 
   # To add assets to your application, add an assets section, like this:
   # assets:

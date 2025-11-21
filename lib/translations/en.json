@@ -1,0 +1,39 @@
+{
+  "app_name": "Sayyan",
+
+  "loading": "Loading...",
+  "register": "Register",
+  "login": "Log in",
+  "already_have_account": "Already have an account?",
+  "create_account_to_continue": "Create an account to continue!",
+
+  "first_name": "First Name",
+  "last_name": "Last Name",
+  "email": "Email",
+  "phone": "Phone Number",
+  "birthdate": "Birth Date",
+  "password": "Password",
+  "confirm_password": "Confirm Password",
+
+  "please_enter_first_name": "Please enter first name",
+  "please_enter_last_name": "Please enter last name",
+  "please_enter_email": "Please enter email",
+  "invalid_email": "Invalid email",
+  "please_enter_phone": "Please enter phone number",
+  "invalid_phone": "Invalid phone number",
+  "please_enter_password": "Please enter password",
+  "password_too_short": "Password must be at least 6 characters",
+  "please_confirm_password": "Please confirm password",
+  "password_not_match": "Passwords do not match",
+
+  "update_password": "Update Password",
+  "set_new_password": "Set a new password",
+  "create_new_password_desc": "Create a new password. Ensure it differs from previous ones for security",
+
+  "password_reset": "Password reset",
+  "password_reset_desc": "Your password has been successfully reset. Click below to log in magically.",
+
+  "verify_email_sent": "A verification link has been sent to your email. Please check before logging in.",
+
+  "loading_text": "Loading..."
+}
