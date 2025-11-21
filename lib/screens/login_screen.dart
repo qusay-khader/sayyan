@@ -45,10 +45,13 @@ class _LoginScreenState extends State<LoginScreen> {
       await userCredential.user!.reload();
       User? user = FirebaseAuth.instance.currentUser;
 
-      if (user != null && !user.emailVerified) {
+      // Skip email verification for admin
+      final userEmail = user?.email ?? '';
+      if (user != null &&
+          userEmail != 'admin@sayyan.com' &&
+          !user.emailVerified) {
         // إذا البريد غير مفعّل، نسجّل خروج ونعرض رسالة
         await FirebaseAuth.instance.signOut();
-
         if (mounted) {
           showDialog(
             context: context,

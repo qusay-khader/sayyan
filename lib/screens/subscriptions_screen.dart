@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:sayyan/screens/requests_screen.dart';
 
 class SubscriptionsScreen extends StatelessWidget {
   const SubscriptionsScreen({super.key});
@@ -424,13 +425,27 @@ class SubscriptionsScreen extends StatelessWidget {
                     });
               }
 
-              Navigator.pop(context);
+              Navigator.pop(context); // Close dialog
+
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Subscription activated successfully!'),
                   backgroundColor: Colors.green,
                 ),
               );
+
+              // Navigate to Requests Screen
+              await Future.delayed(
+                const Duration(seconds: 1),
+              ); // Wait for snackbar
+
+              if (context.mounted) {
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => const RequestsScreen(),
+                  ),
+                );
+              }
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF4A6FFF),

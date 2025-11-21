@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
-as picker;
+    as picker;
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -59,7 +59,7 @@ class _RegisterPageState extends State<RegisterPage> {
       onConfirm: (date) {
         setState(() {
           _dateController.text =
-          "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
+              "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
         });
       },
     );
@@ -74,9 +74,9 @@ class _RegisterPageState extends State<RegisterPage> {
       // Create an account in Firebase Authentication
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text,
-      );
+            email: _emailController.text.trim(),
+            password: _passwordController.text,
+          );
 
       // Send verification email
       await userCredential.user!.sendEmailVerification();
@@ -86,14 +86,14 @@ class _RegisterPageState extends State<RegisterPage> {
           .collection('users')
           .doc(userCredential.user!.uid)
           .set({
-        'firstName': _nameController.text.trim(),
-        'lastName': _lastNameController.text.trim(),
-        'email': _emailController.text.trim(),
-        'birthDate': _dateController.text,
-        'phone_number': '+962${_phoneController.text.trim()}',
-        'emailVerified': false,
-        'createdAt': FieldValue.serverTimestamp(),
-      });
+            'firstName': _nameController.text.trim(),
+            'lastName': _lastNameController.text.trim(),
+            'email': _emailController.text.trim(),
+            'birthDate': _dateController.text,
+            'phone_number': '+962${_phoneController.text.trim()}',
+            'emailVerified': false,
+            'createdAt': FieldValue.serverTimestamp(),
+          });
 
       // Log the user out immediately
       await FirebaseAuth.instance.signOut();
@@ -210,7 +210,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       ),
                       validator: (v) =>
-                      v!.isEmpty ? 'Please enter first name' : null,
+                          v!.isEmpty ? 'Please enter first name' : null,
                     ),
                   ),
 
@@ -245,7 +245,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       ),
                       validator: (v) =>
-                      v!.isEmpty ? 'Please enter last name' : null,
+                          v!.isEmpty ? 'Please enter last name' : null,
                     ),
                   ),
 
@@ -477,7 +477,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                           onPressed: () {
                             setState(
-                                  () => _obscurePassword = !_obscurePassword,
+                              () => _obscurePassword = !_obscurePassword,
                             );
                           },
                         ),
@@ -513,21 +513,21 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       child: _isLoading
                           ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        ),
-                      )
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              ),
+                            )
                           : const Text(
-                        'Register',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
-                      ),
+                              'Register',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
                     ),
                   ),
 

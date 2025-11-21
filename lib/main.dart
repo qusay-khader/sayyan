@@ -1,10 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sayyan/screens/check_email_screen.dart';
-import 'package:sayyan/screens/forgot_password_screen.dart';
-import 'package:sayyan/screens/password_reset_screen.dart';
-import 'package:sayyan/screens/set_new_password_screen.dart';
+import 'package:sayyan/screens/admin_dashboard.dart';
 import 'screens/screens.dart';
 import 'firebase_options.dart';
 
@@ -23,7 +22,6 @@ void main() async {
   runApp(const MyApp());
 }
 
-// fawzi awad
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -54,6 +52,7 @@ class MyApp extends StatelessWidget {
         '/edit-profile': (context) => const EditProfileScreen(),
         '/subscriptions': (context) => const SubscriptionsScreen(),
         '/requests': (context) => const RequestsScreen(),
+        '/admin-dashboard': (context) => const AdminDashboard(),
         '/craftsman-home': (context) => const CraftsmanRegistrationScreen(),
       },
     );
@@ -73,7 +72,18 @@ class AuthWrapper extends StatelessWidget {
         }
 
         if (snapshot.hasData) {
-          return const HomeScreen();
+          final userEmail = snapshot.data!.email ?? '';
+
+          // Hardcoded admin check (no Firestore)
+          if (userEmail == 'admin@sayyan.com') {
+            print('✅ Admin logged in');
+            return AdminDashboard();
+          }
+          // For other users, go to HomeScreen
+          else {
+            print('✅ Normal user logged in');
+            return const HomeScreen();
+          }
         }
 
         return const LoginScreen();

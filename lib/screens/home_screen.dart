@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:sayyan/screens/craftsman_registration_screen.dart';
+import 'package:sayyan/screens/subscriptions_screen.dart';
+import 'package:sayyan/screens/requests_screen.dart';
 import 'package:sayyan/screens/profile_screen.dart';
 import '../models/maintenance_request.dart';
 
@@ -16,16 +18,17 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = [
-    const _HomePage(),
-    const CraftsmanRegistrationScreen(),
-    const ProfileScreenEnhanced(),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[_selectedIndex],
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: [
+          const _HomePage(),
+          const _RequestsTabWrapper(), // Dynamic based on craftsman status
+          const ProfileScreenEnhanced(),
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: (index) {
@@ -38,11 +41,195 @@ class _HomeScreenState extends State<HomeScreen> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(
-            icon: Icon(Icons.description),
-            label: 'Requests',
+            icon: Icon(Icons.work_outline),
+            label: 'Work',
           ),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
+      ),
+    );
+  }
+}
+
+// Wrapper for Requests Tab - checks craftsman status
+class _RequestsTabWrapper extends StatelessWidget {
+  const _RequestsTabWrapper();
+
+  @override
+  Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+
+    return StreamBuilder<DocumentSnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('craftsmen')
+          .doc(user?.uid)
+          .snapshots(),
+      builder: (context, snapshot) {
+        // Loading
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        // Not a craftsman - show registration
+        if (!snapshot.hasData || !snapshot.data!.exists) {
+          return const CraftsmanRegistrationScreen();
+        }
+
+        // Get craftsman data
+        final data = snapshot.data!.data() as Map<String, dynamic>?;
+        final status = data?['status'] ?? 'pending';
+        final subscriptionStatus = data?['subscriptionStatus'] ?? 'none';
+
+        // Pending approval
+        if (status == 'pending') {
+          return _buildPendingScreen();
+        }
+
+        // Rejected
+        if (status == 'rejected') {
+          return _buildRejectedScreen();
+        }
+
+        // Approved - check subscription
+        if (status == 'approved') {
+          // No subscription
+          if (subscriptionStatus == 'none' || subscriptionStatus == 'expired') {
+            return const SubscriptionsScreen();
+          }
+
+          // Has subscription - show requests
+          return const RequestsScreen();
+        }
+
+        // Default
+        return const CraftsmanRegistrationScreen();
+      },
+    );
+  }
+
+  Widget _buildPendingScreen() {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF5F7FA),
+      appBar: AppBar(
+        title: const Text('Registration Status'),
+        backgroundColor: const Color(0xFF2196F3),
+      ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(30.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(30),
+                decoration: BoxDecoration(
+                  color: Colors.orange.shade50,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.hourglass_empty,
+                  size: 80,
+                  color: Colors.orange.shade400,
+                ),
+              ),
+              const SizedBox(height: 30),
+              const Text(
+                'Pending Approval',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Your craftsman registration is under review. We\'ll notify you once it\'s approved.',
+                style: TextStyle(
+                  fontSize: 15,
+                  color: Colors.grey[600],
+                  height: 1.5,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 30),
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.blue.shade50,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.info_outline, color: Colors.blue.shade700),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        'Usually takes 24-48 hours',
+                        style: TextStyle(
+                          color: Colors.blue.shade700,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRejectedScreen() {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF5F7FA),
+      appBar: AppBar(
+        title: const Text('Registration Status'),
+        backgroundColor: const Color(0xFF2196F3),
+      ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(30.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(30),
+                decoration: BoxDecoration(
+                  color: Colors.red.shade50,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.cancel_outlined,
+                  size: 80,
+                  color: Colors.red.shade400,
+                ),
+              ),
+              const SizedBox(height: 30),
+              const Text(
+                'Application Rejected',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Unfortunately, your craftsman registration was not approved. Please contact support for more details.',
+                style: TextStyle(
+                  fontSize: 15,
+                  color: Colors.grey[600],
+                  height: 1.5,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -71,9 +258,8 @@ class _HomePage extends StatelessWidget {
             child: const Icon(Icons.build, color: Color(0xFF2196F3), size: 20),
           ),
         ),
-        title: const SizedBox.shrink(), // بدون عنوان
+        title: const SizedBox.shrink(),
         actions: [
-          // أيقونة الإشعارات
           IconButton(
             icon: const Icon(
               Icons.notifications_outlined,
@@ -81,19 +267,14 @@ class _HomePage extends StatelessWidget {
               size: 26,
             ),
             onPressed: () {
-              // TODO: Navigate to notifications page
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Notifications - Coming Soon')),
               );
             },
           ),
-
           const SizedBox(width: 8),
-
-          // صورة المستخدم (تنقل للبروفايل)
           GestureDetector(
             onTap: () {
-              // الانتقال للبروفايل (Tab رقم 2)
               final homeState = context
                   .findAncestorStateOfType<_HomeScreenState>();
               homeState?.setState(() {
@@ -120,7 +301,6 @@ class _HomePage extends StatelessWidget {
       ),
       body: Column(
         children: [
-          // White Container
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(20),
@@ -177,10 +357,7 @@ class _HomePage extends StatelessWidget {
               ],
             ),
           ),
-
           const SizedBox(height: 8),
-
-          // My Requests Label
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Align(
@@ -195,10 +372,7 @@ class _HomePage extends StatelessWidget {
               ),
             ),
           ),
-
           const SizedBox(height: 12),
-
-          // Requests List
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
@@ -278,7 +452,6 @@ class _RequestCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // Icon
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
@@ -291,10 +464,7 @@ class _RequestCard extends StatelessWidget {
               size: 24,
             ),
           ),
-
           const SizedBox(width: 14),
-
-          // Info
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -322,10 +492,7 @@ class _RequestCard extends StatelessWidget {
               ],
             ),
           ),
-
           const SizedBox(width: 8),
-
-          // Status
           _StatusBadge(status: request.status),
         ],
       ),
