@@ -43,3 +43,15 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Platform-specific folders (not needed in version control)
+macos/
+windows/
+linux/
+
+# macOS specific
+*.DS_Store
+
+# Generated plugin files
+*.lock
+.flutter-plugins
