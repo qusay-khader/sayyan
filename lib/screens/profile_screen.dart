@@ -37,11 +37,13 @@ class _ProfileScreenEnhancedState extends State<ProfileScreenEnhanced> {
           }
 
           final userData = snapshot.data?.data() as Map<String, dynamic>? ?? {};
-          final String name =
-              userData['name'] ?? user.displayName ?? 'بدون اسم';
+          final String firstName = userData['firstName'] ?? '';
+          final String lastName = userData['lastName'] ?? '';
+          final String name = firstName.isNotEmpty && lastName.isNotEmpty
+              ? '$firstName $lastName'
+              : user.displayName ?? 'بدون اسم';
           final String email = user.email ?? 'بدون بريد';
           final String phoneNumber = userData['phone_number'] ?? 'غير متوفر';
-
           return CustomScrollView(
             slivers: [
               // App Bar with Gradient
