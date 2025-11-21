@@ -49,8 +49,12 @@ class MyApp extends StatelessWidget {
         '/set-new-password': (context) => const SetNewPasswordScreen(),
         '/password-reset-success': (context) => const PasswordResetScreen(),
         '/home': (context) => const HomeScreen(),
-        '/service-request': (context) => const ServiceRequestScreen(), // جديد
+        '/service-request': (context) => const ServiceRequestScreen(),
         '/profile': (context) => const ProfileScreenEnhanced(),
+        '/edit-profile': (context) => const EditProfileScreen(),
+        '/subscriptions': (context) => const SubscriptionsScreen(),
+        '/requests': (context) => const RequestsScreen(),
+        '/craftsman-home': (context) => const CraftsmanRegistrationScreen(),
       },
     );
   }

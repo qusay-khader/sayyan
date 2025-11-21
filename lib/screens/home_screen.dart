@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:sayyan/screens/craftsman_registration_screen.dart';
 import 'package:sayyan/screens/profile_screen.dart';
 import '../models/maintenance_request.dart';
 
@@ -17,7 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final List<Widget> _pages = [
     const _HomePage(),
-    const _RequestsPage(),
+    const CraftsmanRegistrationScreen(),
     const ProfileScreenEnhanced(),
   ];
 
@@ -380,63 +381,6 @@ class _StatusBadge extends StatelessWidget {
           fontWeight: FontWeight.w600,
         ),
       ),
-    );
-  }
-}
-
-// ==================== REQUESTS PAGE (مع AppBar) ====================
-class _RequestsPage extends StatelessWidget {
-  const _RequestsPage();
-
-  @override
-  Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
-
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF2196F3),
-        elevation: 0,
-        leading: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Container(
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.notifications,
-              color: Color(0xFF2196F3),
-              size: 20,
-            ),
-          ),
-        ),
-        title: const Text(
-          'My Requests',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: Colors.white,
-          ),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 12.0),
-            child: CircleAvatar(
-              backgroundColor: Colors.white,
-              radius: 18,
-              child: Text(
-                user?.email?[0].toUpperCase() ?? 'U',
-                style: const TextStyle(
-                  color: Color(0xFF2196F3),
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-      body: const Center(child: Text('All Requests - Coming Soon')),
     );
   }
 }

@@ -22,6 +22,7 @@ class _ProfileScreenEnhancedState extends State<ProfileScreenEnhanced> {
     }
 
     return Scaffold(
+      backgroundColor: const Color(0xFFF5F7FA),
       body: StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance
             .collection('users')
@@ -37,73 +38,110 @@ class _ProfileScreenEnhancedState extends State<ProfileScreenEnhanced> {
           }
 
           final userData = snapshot.data?.data() as Map<String, dynamic>? ?? {};
-          final String name = userData['name'] ?? user.displayName ?? 'No Name';
-          final String email = user.email ?? 'No Email';
-          final String phoneNumber =
-              userData['phone_number'] ?? 'Not available';
 
-          final String firstName = userData['firstName'] ?? '';
-          final String lastName = userData['lastName'] ?? '';
-          final String name = firstName.isNotEmpty && lastName.isNotEmpty
-              ? '$firstName $lastName'
+          // Get all user data
+          final String firstName = userData['firstName'] ?? 'Not provided';
+          final String lastName = userData['lastName'] ?? 'Not provided';
+          final String fullName =
+              userData['firstName'] != null && userData['lastName'] != null
+              ? '${userData['firstName']} ${userData['lastName']}'
               : user.displayName ?? 'No Name';
           final String email = user.email ?? 'No Email';
-          final String phoneNumber =
-              userData['phone_number'] ?? 'Not available';
+          final String phoneNumber = userData['phone_number'] ?? 'Not provided';
+          final String birthDate = userData['birthDate'] ?? 'Not provided';
 
           return CustomScrollView(
             slivers: [
-              // App Bar with Gradient
+              // Header with gradient
               SliverAppBar(
-                expandedHeight: 200,
+                expandedHeight: 260,
                 floating: false,
                 pinned: true,
+                backgroundColor: const Color(0xFF4A6FFF),
                 flexibleSpace: FlexibleSpaceBar(
                   background: Container(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       gradient: LinearGradient(
-                        begin: Alignment.topRight,
-                        end: Alignment.bottomLeft,
-                        colors: [Colors.blue.shade400, Colors.purple.shade400],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [Color(0xFF4A6FFF), Color(0xFF7C3AED)],
                       ),
                     ),
-                    child: Center(
+                    child: SafeArea(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const SizedBox(height: 60),
+                          const SizedBox(height: 40),
                           // Profile Picture
-                          Hero(
-                            tag: 'profile-image',
-                            child: Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: Colors.white,
-                                  width: 4,
+                          Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Colors.white, width: 5),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.2),
+                                  blurRadius: 20,
+                                  spreadRadius: 5,
                                 ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.2),
-                                    blurRadius: 10,
-                                    spreadRadius: 2,
+                              ],
+                            ),
+                            child: CircleAvatar(
+                              radius: 55,
+                              backgroundColor: Colors.white,
+                              backgroundImage: user.photoURL != null
+                                  ? NetworkImage(user.photoURL!)
+                                  : null,
+                              child: user.photoURL == null
+                                  ? const Icon(
+                                      Icons.person,
+                                      size: 55,
+                                      color: Color(0xFF4A6FFF),
+                                    )
+                                  : null,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          // Full Name
+                          Text(
+                            fullName,
+                            style: const TextStyle(
+                              fontSize: 26,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 8),
+                          // Email badge
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(
+                                  Icons.email_outlined,
+                                  size: 14,
+                                  color: Colors.white,
+                                ),
+                                const SizedBox(width: 6),
+                                Flexible(
+                                  child: Text(
+                                    email,
+                                    style: const TextStyle(
+                                      fontSize: 13,
+                                      color: Colors.white,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                ],
-                              ),
-                              child: CircleAvatar(
-                                radius: 50,
-                                backgroundColor: Colors.white,
-                                backgroundImage: user.photoURL != null
-                                    ? NetworkImage(user.photoURL!)
-                                    : null,
-                                child: user.photoURL == null
-                                    ? const Icon(
-                                        Icons.person,
-                                        size: 50,
-                                        color: Colors.grey,
-                                      )
-                                    : null,
-                              ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
@@ -113,77 +151,76 @@ class _ProfileScreenEnhancedState extends State<ProfileScreenEnhanced> {
                 ),
               ),
 
-              // Profile Content
+              // Profile Information
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(20.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Name and Email Card
-                      Card(
-                        elevation: 2,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Column(
-                            children: [
-                              Text(
-                                name,
-                                style: const TextStyle(
-                                  fontSize: 26,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                              const SizedBox(height: 8),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.email,
-                                    size: 16,
-                                    color: Colors.grey[600],
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Flexible(
-                                    child: Text(
-                                      email,
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.grey[600],
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                      // Personal Information Section
+                      const Text(
+                        'Personal Information',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
                         ),
                       ),
+                      const SizedBox(height: 16),
 
-                      const SizedBox(height: 24),
-
-                      // Section Title
-                      const Padding(
-                        padding: EdgeInsets.only(right: 8, bottom: 12),
-                        child: Text(
-                          'Contact Information',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
-                          ),
-                        ),
-                      ),
-
-                      // Contact Information Cards
+                      // First Name Card
                       _buildInfoCard(
-                        icon: Icons.phone_rounded,
-                        iconColor: Colors.green,
+                        icon: Icons.person_outline,
+                        iconColor: const Color(0xFF4A6FFF),
+                        title: 'First Name',
+                        value: firstName,
+                      ),
+                      const SizedBox(height: 12),
+
+                      // Last Name Card
+                      _buildInfoCard(
+                        icon: Icons.person_outline,
+                        iconColor: const Color(0xFF7C3AED),
+                        title: 'Last Name',
+                        value: lastName,
+                      ),
+                      const SizedBox(height: 12),
+
+                      // Birth Date Card
+                      _buildInfoCard(
+                        icon: Icons.cake_outlined,
+                        iconColor: const Color(0xFFEC4899),
+                        title: 'Birth Date',
+                        value: birthDate,
+                      ),
+
+                      const SizedBox(height: 32),
+
+                      // Contact Information Section
+                      const Text(
+                        'Contact Information',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Email Card
+                      _buildInfoCard(
+                        icon: Icons.email_outlined,
+                        iconColor: const Color(0xFF10B981),
+                        title: 'Email Address',
+                        value: email,
+                      ),
+                      const SizedBox(height: 12),
+
+                      // Phone Number Card
+                      _buildInfoCard(
+                        icon: Icons.phone_outlined,
+                        iconColor: const Color(0xFF06B6D4),
                         title: 'Phone Number',
                         value: phoneNumber,
                       ),
@@ -200,16 +237,16 @@ class _ProfileScreenEnhancedState extends State<ProfileScreenEnhanced> {
                                   context,
                                 ).pushNamed('/edit-profile');
                               },
-                              icon: const Icon(Icons.edit_rounded),
+                              icon: const Icon(Icons.edit_outlined),
                               label: const Text(
                                 'Edit Profile',
                                 style: TextStyle(
                                   fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.blue,
+                                backgroundColor: const Color(0xFF4A6FFF),
                                 foregroundColor: Colors.white,
                                 padding: const EdgeInsets.symmetric(
                                   vertical: 16,
@@ -217,7 +254,7 @@ class _ProfileScreenEnhancedState extends State<ProfileScreenEnhanced> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),
                                 ),
-                                elevation: 2,
+                                elevation: 0,
                               ),
                             ),
                           ),
@@ -235,7 +272,15 @@ class _ProfileScreenEnhancedState extends State<ProfileScreenEnhanced> {
                                 final shouldLogout = await showDialog<bool>(
                                   context: context,
                                   builder: (context) => AlertDialog(
-                                    title: const Text('Logout'),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    title: const Text(
+                                      'Logout',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
                                     content: const Text(
                                       'Are you sure you want to logout?',
                                     ),
@@ -243,14 +288,22 @@ class _ProfileScreenEnhancedState extends State<ProfileScreenEnhanced> {
                                       TextButton(
                                         onPressed: () =>
                                             Navigator.pop(context, false),
-                                        child: const Text('Cancel'),
+                                        child: Text(
+                                          'Cancel',
+                                          style: TextStyle(
+                                            color: Colors.grey[600],
+                                          ),
+                                        ),
                                       ),
                                       TextButton(
                                         onPressed: () =>
                                             Navigator.pop(context, true),
                                         child: const Text(
                                           'Logout',
-                                          style: TextStyle(color: Colors.red),
+                                          style: TextStyle(
+                                            color: Colors.red,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -266,12 +319,12 @@ class _ProfileScreenEnhancedState extends State<ProfileScreenEnhanced> {
                                   }
                                 }
                               },
-                              icon: const Icon(Icons.logout_rounded),
+                              icon: const Icon(Icons.logout_outlined),
                               label: const Text(
                                 'Logout',
                                 style: TextStyle(
                                   fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                               style: OutlinedButton.styleFrom(
@@ -292,7 +345,7 @@ class _ProfileScreenEnhancedState extends State<ProfileScreenEnhanced> {
                         ],
                       ),
 
-                      const SizedBox(height: 32),
+                      const SizedBox(height: 40),
                     ],
                   ),
                 ),
@@ -309,17 +362,22 @@ class _ProfileScreenEnhancedState extends State<ProfileScreenEnhanced> {
     required Color iconColor,
     required String title,
     required String value,
-    bool isMultiline = false,
   }) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Row(
-          crossAxisAlignment: isMultiline
-              ? CrossAxisAlignment.start
-              : CrossAxisAlignment.center,
           children: [
             Container(
               padding: const EdgeInsets.all(12),
