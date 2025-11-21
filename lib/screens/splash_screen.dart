@@ -52,7 +52,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
             // Loading Text
             const Text(
-              'جاري التحميل...',
+              'Loading...',
               style: TextStyle(fontSize: 16, color: Colors.grey),
             ),
           ],
