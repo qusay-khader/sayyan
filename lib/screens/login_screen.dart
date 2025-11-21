@@ -41,7 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
             password: _passwordController.text.trim(),
           );
 
-      // إعادة تحميل بيانات المستخدم من السيرفر للحصول على آخر حالة
+      // إعادة تحميل بيانات المستخدم
       await userCredential.user!.reload();
       User? user = FirebaseAuth.instance.currentUser;
 
@@ -50,105 +50,22 @@ class _LoginScreenState extends State<LoginScreen> {
       if (user != null &&
           userEmail != 'admin@sayyan.com' &&
           !user.emailVerified) {
-        // إذا البريد غير مفعّل، نسجّل خروج ونعرض رسالة
+        // إذا البريد غير مفعّل
         await FirebaseAuth.instance.signOut();
+
         if (mounted) {
           showDialog(
             context: context,
             barrierDismissible: false,
             builder: (context) => AlertDialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              title: const Text(
-                'Email Not Verified',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF2D5F7C),
-                ),
-              ),
-              content: const Text(
-                'Please verify your email address first.\n\nCheck your inbox for the verification link, then click "I\'ve Verified" to continue.',
-                style: TextStyle(fontSize: 14),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(
-                    'Cancel',
-                    style: TextStyle(color: Colors.grey[600]),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () async {
-                    try {
-                      // تسجيل دخول مؤقت لإرسال البريد
-                      UserCredential temp = await FirebaseAuth.instance
-                          .signInWithEmailAndPassword(
-                            email: _emailController.text.trim(),
-                            password: _passwordController.text.trim(),
-                          );
-                      await temp.user!.sendEmailVerification();
-                      await FirebaseAuth.instance.signOut();
-
-                      if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              'Verification link sent to your email',
-                            ),
-                            backgroundColor: Colors.green,
-                          ),
-                        );
-                      }
-                    } catch (e) {
-                      if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Error: $e'),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
-                      }
-                    }
-                  },
-                  child: const Text(
-                    'Resend Email',
-                    style: TextStyle(color: Color(0xFF4461F2)),
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed: () async {
-                    Navigator.pop(context);
-                    // إعادة محاولة تسجيل الدخول
-                    await _login();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF4461F2),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: const Text("I've Verified"),
-                ),
-              ],
+              // ... باقي الـ Dialog
             ),
           );
         }
         return;
       }
 
-      // Navigate to home screen after successful login
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Login successful'),
-            backgroundColor: Colors.green,
-          ),
-        );
-        // You can navigate to home screen here
-        // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
-      }
+      // ✅ تم تسجيل الدخول بنجاح - AuthWrapper سيتولى Navigation
     } on FirebaseAuthException catch (e) {
       String errorMessage = 'An error occurred during login';
 

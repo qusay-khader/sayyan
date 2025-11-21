@@ -6,6 +6,7 @@ import 'package:sayyan/screens/craftsman_registration_screen.dart';
 import 'package:sayyan/screens/subscriptions_screen.dart';
 import 'package:sayyan/screens/requests_screen.dart';
 import 'package:sayyan/screens/profile_screen.dart';
+import 'package:sayyan/screens/request_status_screen.dart';
 import '../models/maintenance_request.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -436,65 +437,76 @@ class _RequestCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+    return GestureDetector(
+      onTap: () {
+        // Navigate to request status screen
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => RequestStatusScreen(request: request),
           ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: const Color(0xFFE3F2FD),
-              borderRadius: BorderRadius.circular(8),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.06),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
             ),
-            child: Icon(
-              _getDeviceIcon(request.deviceType),
-              color: const Color(0xFF2196F3),
-              size: 24,
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: const Color(0xFFE3F2FD),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                _getDeviceIcon(request.deviceType),
+                color: const Color(0xFF2196F3),
+                size: 24,
+              ),
             ),
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  request.deviceType,
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    request.deviceType,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black87,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  request.problemDetails.length > 30
-                      ? '${request.problemDetails.substring(0, 30)}...'
-                      : request.problemDetails,
-                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Nov ${request.createdAt.day}, ${request.createdAt.year} - ${request.createdAt.hour}:${request.createdAt.minute.toString().padLeft(2, '0')} JOD',
-                  style: TextStyle(fontSize: 11, color: Colors.grey[500]),
-                ),
-              ],
+                  const SizedBox(height: 4),
+                  Text(
+                    request.problemDetails.length > 30
+                        ? '${request.problemDetails.substring(0, 30)}...'
+                        : request.problemDetails,
+                    style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Nov ${request.createdAt.day}, ${request.createdAt.year} - ${request.createdAt.hour}:${request.createdAt.minute.toString().padLeft(2, '0')} JOD',
+                    style: TextStyle(fontSize: 11, color: Colors.grey[500]),
+                  ),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(width: 8),
-          _StatusBadge(status: request.status),
-        ],
+            const SizedBox(width: 8),
+            _StatusBadge(status: request.status),
+          ],
+        ),
       ),
     );
   }
