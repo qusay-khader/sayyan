@@ -16,8 +16,8 @@ class _ProfileScreenEnhancedState extends State<ProfileScreenEnhanced> {
 
     if (user == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('الملف الشخصي'), centerTitle: true),
-        body: const Center(child: Text('المستخدم غير مسجل دخول')),
+        appBar: AppBar(title: const Text('Profile'), centerTitle: true),
+        body: const Center(child: Text('User not logged in')),
       );
     }
 
@@ -33,17 +33,15 @@ class _ProfileScreenEnhancedState extends State<ProfileScreenEnhanced> {
           }
 
           if (snapshot.hasError) {
-            return Center(child: Text('خطأ: ${snapshot.error}'));
+            return Center(child: Text('Error: ${snapshot.error}'));
           }
 
           final userData = snapshot.data?.data() as Map<String, dynamic>? ?? {};
-          final String firstName = userData['firstName'] ?? '';
-          final String lastName = userData['lastName'] ?? '';
-          final String name = firstName.isNotEmpty && lastName.isNotEmpty
-              ? '$firstName $lastName'
-              : user.displayName ?? 'بدون اسم';
-          final String email = user.email ?? 'بدون بريد';
-          final String phoneNumber = userData['phone_number'] ?? 'غير متوفر';
+          final String name = userData['name'] ?? user.displayName ?? 'No Name';
+          final String email = user.email ?? 'No Email';
+          final String phoneNumber =
+              userData['phone_number'] ?? 'Not available';
+
           return CustomScrollView(
             slivers: [
               // App Bar with Gradient
@@ -164,7 +162,7 @@ class _ProfileScreenEnhancedState extends State<ProfileScreenEnhanced> {
                       const Padding(
                         padding: EdgeInsets.only(right: 8, bottom: 12),
                         child: Text(
-                          'معلومات الاتصال',
+                          'Contact Information',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -177,11 +175,10 @@ class _ProfileScreenEnhancedState extends State<ProfileScreenEnhanced> {
                       _buildInfoCard(
                         icon: Icons.phone_rounded,
                         iconColor: Colors.green,
-                        title: 'رقم الهاتف',
+                        title: 'Phone Number',
                         value: phoneNumber,
                       ),
 
-                      // Interests Card
                       const SizedBox(height: 32),
 
                       // Action Buttons
@@ -196,7 +193,7 @@ class _ProfileScreenEnhancedState extends State<ProfileScreenEnhanced> {
                               },
                               icon: const Icon(Icons.edit_rounded),
                               label: const Text(
-                                'تعديل الملف',
+                                'Edit Profile',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -229,21 +226,21 @@ class _ProfileScreenEnhancedState extends State<ProfileScreenEnhanced> {
                                 final shouldLogout = await showDialog<bool>(
                                   context: context,
                                   builder: (context) => AlertDialog(
-                                    title: const Text('تسجيل الخروج'),
+                                    title: const Text('Logout'),
                                     content: const Text(
-                                      'هل أنت متأكد من تسجيل الخروج؟',
+                                      'Are you sure you want to logout?',
                                     ),
                                     actions: [
                                       TextButton(
                                         onPressed: () =>
                                             Navigator.pop(context, false),
-                                        child: const Text('إلغاء'),
+                                        child: const Text('Cancel'),
                                       ),
                                       TextButton(
                                         onPressed: () =>
                                             Navigator.pop(context, true),
                                         child: const Text(
-                                          'تسجيل الخروج',
+                                          'Logout',
                                           style: TextStyle(color: Colors.red),
                                         ),
                                       ),
@@ -262,7 +259,7 @@ class _ProfileScreenEnhancedState extends State<ProfileScreenEnhanced> {
                               },
                               icon: const Icon(Icons.logout_rounded),
                               label: const Text(
-                                'تسجيل الخروج',
+                                'Logout',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,

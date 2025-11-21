@@ -36,16 +36,16 @@ class _SetNewPasswordScreenState extends State<SetNewPasswordScreen> {
 
         if (!mounted) return;
 
-        // الانتقال لشاشة النجاح
+        // Navigate to success screen
         Navigator.pushReplacementNamed(context, '/password-reset-success');
       }
     } on FirebaseAuthException catch (e) {
-      String message = 'حدث خطأ، حاول مرة أخرى';
+      String message = 'An error occurred, please try again';
 
       if (e.code == 'weak-password') {
-        message = 'كلمة المرور ضعيفة جداً';
+        message = 'Password is too weak';
       } else if (e.code == 'requires-recent-login') {
-        message = 'الرجاء تسجيل الدخول مرة أخرى';
+        message = 'Please log in again';
       }
 
       if (!mounted) return;
@@ -82,7 +82,6 @@ class _SetNewPasswordScreenState extends State<SetNewPasswordScreen> {
               children: [
                 const SizedBox(height: 20),
 
-                // العنوان
                 const Text(
                   'Set a new password',
                   style: TextStyle(
@@ -94,7 +93,6 @@ class _SetNewPasswordScreenState extends State<SetNewPasswordScreen> {
 
                 const SizedBox(height: 12),
 
-                // الوصف
                 const Text(
                   'Create a new password. Ensure it differs from previous ones for security',
                   style: TextStyle(
@@ -106,7 +104,6 @@ class _SetNewPasswordScreenState extends State<SetNewPasswordScreen> {
 
                 const SizedBox(height: 40),
 
-                // حقل كلمة المرور
                 const Text(
                   'Password',
                   style: TextStyle(
@@ -137,10 +134,8 @@ class _SetNewPasswordScreenState extends State<SetNewPasswordScreen> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(
-                        color: Colors.blue,
-                        width: 2,
-                      ),
+                      borderSide:
+                      const BorderSide(color: Colors.blue, width: 2),
                     ),
                     suffixIcon: IconButton(
                       icon: Icon(
@@ -151,7 +146,7 @@ class _SetNewPasswordScreenState extends State<SetNewPasswordScreen> {
                       ),
                       onPressed: () {
                         setState(
-                          () => _isPasswordVisible = !_isPasswordVisible,
+                              () => _isPasswordVisible = !_isPasswordVisible,
                         );
                       },
                     ),
@@ -162,10 +157,10 @@ class _SetNewPasswordScreenState extends State<SetNewPasswordScreen> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'الرجاء إدخال كلمة المرور';
+                      return 'Please enter password';
                     }
                     if (value.length < 6) {
-                      return 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
+                      return 'Password must be at least 6 characters';
                     }
                     return null;
                   },
@@ -173,7 +168,6 @@ class _SetNewPasswordScreenState extends State<SetNewPasswordScreen> {
 
                 const SizedBox(height: 24),
 
-                // حقل تأكيد كلمة المرور
                 const Text(
                   'Confirm Password',
                   style: TextStyle(
@@ -204,10 +198,8 @@ class _SetNewPasswordScreenState extends State<SetNewPasswordScreen> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(
-                        color: Colors.blue,
-                        width: 2,
-                      ),
+                      borderSide:
+                      const BorderSide(color: Colors.blue, width: 2),
                     ),
                     suffixIcon: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -227,8 +219,8 @@ class _SetNewPasswordScreenState extends State<SetNewPasswordScreen> {
                           ),
                           onPressed: () {
                             setState(
-                              () => _isConfirmPasswordVisible =
-                                  !_isConfirmPasswordVisible,
+                                  () => _isConfirmPasswordVisible =
+                              !_isConfirmPasswordVisible,
                             );
                           },
                         ),
@@ -241,10 +233,10 @@ class _SetNewPasswordScreenState extends State<SetNewPasswordScreen> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'الرجاء تأكيد كلمة المرور';
+                      return 'Please confirm password';
                     }
                     if (value != _passwordController.text) {
-                      return 'كلمة المرور غير متطابقة';
+                      return 'Passwords do not match';
                     }
                     return null;
                   },
@@ -252,7 +244,6 @@ class _SetNewPasswordScreenState extends State<SetNewPasswordScreen> {
 
                 const SizedBox(height: 32),
 
-                // زر Update Password
                 SizedBox(
                   width: double.infinity,
                   height: 56,
@@ -267,23 +258,22 @@ class _SetNewPasswordScreenState extends State<SetNewPasswordScreen> {
                     ),
                     child: _isLoading
                         ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.white,
-                              ),
-                            ),
-                          )
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor:
+                        AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    )
                         : const Text(
-                            'Update Password',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            ),
-                          ),
+                      'Update Password',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
                 ),
               ],
