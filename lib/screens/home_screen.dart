@@ -376,8 +376,9 @@ class _HomePage extends StatelessWidget {
           const SizedBox(height: 12),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
+              // ✅ Fixed: Changed to 'requests' collection
               stream: FirebaseFirestore.instance
-                  .collection('maintenance_requests')
+                  .collection('requests')
                   .where('userId', isEqualTo: user?.uid)
                   .orderBy('createdAt', descending: true)
                   .snapshots(),

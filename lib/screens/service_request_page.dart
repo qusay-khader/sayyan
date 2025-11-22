@@ -60,12 +60,13 @@ class _ServiceRequestScreenState extends State<ServiceRequestScreen> {
         deviceType: _selectedDevice!,
         problemDetails: _problemController.text.trim(),
         images: [], // فاضي مؤقتاً
-        status: 'pending',
+        status: 'open', // ✅ Changed from 'pending' to 'open'
         createdAt: DateTime.now(),
       );
 
+      // ✅ Fixed: Changed to 'requests' collection
       await FirebaseFirestore.instance
-          .collection('maintenance_requests')
+          .collection('requests')
           .add(request.toFirestore());
 
       if (!mounted) return;

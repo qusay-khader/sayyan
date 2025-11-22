@@ -55,7 +55,7 @@ class RequestsScreen extends StatelessWidget {
             return _buildNoSubscriptionScreen(context);
           }
 
-          // Show requests
+          // Show requests - ✅ Changed to 'open' status
           return StreamBuilder<QuerySnapshot>(
             stream: FirebaseFirestore.instance
                 .collection('requests')
@@ -65,6 +65,30 @@ class RequestsScreen extends StatelessWidget {
             builder: (context, requestsSnapshot) {
               if (requestsSnapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
+              }
+
+              if (requestsSnapshot.hasError) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.error_outline,
+                        size: 60,
+                        color: Colors.red[300],
+                      ),
+                      const SizedBox(height: 16),
+                      Text('Error: ${requestsSnapshot.error}'),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: () {
+                          // Trigger rebuild
+                        },
+                        child: const Text('Retry'),
+                      ),
+                    ],
+                  ),
+                );
               }
 
               if (!requestsSnapshot.hasData ||
@@ -164,8 +188,8 @@ class RequestsScreen extends StatelessWidget {
           children: [
             Container(
               padding: const EdgeInsets.all(30),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
                   colors: [Color(0xFF4A6FFF), Color(0xFF7C3AED)],
                 ),
                 shape: BoxShape.circle,
@@ -254,7 +278,7 @@ class RequestsScreen extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             Text(
-              'When customers post job requests matching your category, they\'ll appear here.',
+              'When customers post job requests, they\'ll appear here.',
               style: TextStyle(
                 fontSize: 15,
                 color: Colors.grey[600],
@@ -273,12 +297,9 @@ class RequestsScreen extends StatelessWidget {
     String requestId,
     Map<String, dynamic> data,
   ) {
-    final title = data['title'] ?? 'Untitled';
-    final description = data['description'] ?? 'No description';
-    final category = data['category'] ?? 'General';
-    final location = data['location'] ?? 'Unknown';
-    final budget = data['budget'] ?? 'Not specified';
-    final urgent = data['urgent'] ?? false;
+    // ✅ Fixed: Using actual field names from service request
+    final deviceType = data['deviceType'] ?? 'Device Repair';
+    final problemDetails = data['problemDetails'] ?? 'No description';
     final createdAt = data['createdAt'] as Timestamp?;
 
     String timeAgo = 'Recently';
@@ -331,7 +352,7 @@ class RequestsScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
-                        category,
+                        deviceType,
                         style: const TextStyle(
                           color: Color(0xFF4A6FFF),
                           fontSize: 12,
@@ -339,37 +360,6 @@ class RequestsScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    if (urgent) ...[
-                      const SizedBox(width: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.red.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: const Row(
-                          children: [
-                            Icon(
-                              Icons.access_time,
-                              size: 14,
-                              color: Colors.red,
-                            ),
-                            SizedBox(width: 4),
-                            Text(
-                              'URGENT',
-                              style: TextStyle(
-                                color: Colors.red,
-                                fontSize: 11,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
                     const Spacer(),
                     Text(
                       timeAgo,
@@ -381,7 +371,7 @@ class RequestsScreen extends StatelessWidget {
 
                 // Title
                 Text(
-                  title,
+                  deviceType,
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -392,7 +382,7 @@ class RequestsScreen extends StatelessWidget {
 
                 // Description
                 Text(
-                  description,
+                  problemDetails,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -406,26 +396,6 @@ class RequestsScreen extends StatelessWidget {
                 // Footer
                 Row(
                   children: [
-                    Icon(
-                      Icons.location_on_outlined,
-                      size: 16,
-                      color: Colors.grey[500],
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      location,
-                      style: TextStyle(fontSize: 13, color: Colors.grey[600]),
-                    ),
-                    const SizedBox(width: 16),
-                    Icon(Icons.attach_money, size: 16, color: Colors.grey[500]),
-                    Text(
-                      budget,
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Colors.grey[600],
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
                     const Spacer(),
                     Container(
                       padding: const EdgeInsets.symmetric(
@@ -460,14 +430,17 @@ class RequestsScreen extends StatelessWidget {
     String requestId,
     Map<String, dynamic> data,
   ) {
+    final deviceType = data['deviceType'] ?? 'Device Repair';
+    final problemDetails = data['problemDetails'] ?? 'No description';
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 0.75,
+        initialChildSize: 0.7,
         minChildSize: 0.5,
-        maxChildSize: 0.95,
+        maxChildSize: 0.9,
         builder: (context, scrollController) => Container(
           decoration: const BoxDecoration(
             color: Colors.white,
@@ -498,7 +471,7 @@ class RequestsScreen extends StatelessWidget {
 
                   // Title
                   Text(
-                    data['title'] ?? 'Untitled',
+                    deviceType,
                     style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -506,60 +479,35 @@ class RequestsScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
 
-                  // Category & Urgent
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF4A6FFF).withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text(
-                          data['category'] ?? 'General',
-                          style: const TextStyle(
-                            color: Color(0xFF4A6FFF),
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
+                  // Category Badge
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF4A6FFF).withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      deviceType,
+                      style: const TextStyle(
+                        color: Color(0xFF4A6FFF),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
                       ),
-                      if (data['urgent'] == true) ...[
-                        const SizedBox(width: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 6,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.red.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: const Text(
-                            'URGENT',
-                            style: TextStyle(
-                              color: Colors.red,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ],
+                    ),
                   ),
                   const SizedBox(height: 24),
 
                   // Description
                   const Text(
-                    'Description',
+                    'Problem Details',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    data['description'] ?? 'No description provided',
+                    problemDetails,
                     style: TextStyle(
                       fontSize: 15,
                       color: Colors.grey[700],
@@ -568,17 +516,7 @@ class RequestsScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 24),
 
-                  // Details
-                  _buildDetailRow(
-                    Icons.location_on_outlined,
-                    'Location',
-                    data['location'] ?? 'Not specified',
-                  ),
-                  _buildDetailRow(
-                    Icons.attach_money,
-                    'Budget',
-                    data['budget'] ?? 'Not specified',
-                  ),
+                  // Posted date
                   _buildDetailRow(
                     Icons.calendar_today_outlined,
                     'Posted',
@@ -724,19 +662,23 @@ class RequestsScreen extends StatelessWidget {
                       'acceptedAt': FieldValue.serverTimestamp(),
                     });
 
-                Navigator.pop(context); // Close dialog
-                Navigator.pop(context); // Close bottom sheet
+                if (context.mounted) {
+                  Navigator.pop(context); // Close dialog
+                  Navigator.pop(context); // Close bottom sheet
 
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Request accepted successfully!'),
-                    backgroundColor: Colors.green,
-                  ),
-                );
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Request accepted successfully!'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                }
               } catch (e) {
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(SnackBar(content: Text('Error: $e')));
+                if (context.mounted) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text('Error: $e')));
+                }
               }
             },
             style: ElevatedButton.styleFrom(
